@@ -61,6 +61,7 @@ write_files:
       tar -C $HOME/.local/ -xzf $HOME/scripts/nvim-linux-x86_64.tar.gz
       git clone --depth 1 https://github.com/AstroNvim/template $HOME/.config/nvim
       rm -rf $HOME/.config/nvim/.git
+      sudo chown -R user:user $HOME/.local $HOME/.config 
 
 
   - path: /home/user/scripts/ci-install-oss-cad-suite
@@ -81,9 +82,18 @@ write_files:
     content: |
       #!/bin/bash
       HOME=/home/user
-      set -euo pipefail
       git clone https://github.com/greatscottgadgets/cynthion.git $HOME/projects/cynthion
-      sudo chown -R user:user $HOME/.local $HOME/.config 
+
+  - path: /home/user/scripts/ci-install-luna-toolkit
+    permissions: '0755'
+    owner: 'user:user'
+    defer: true
+    content: | 
+      #!/bin/bash
+      HOME=/home/user
+      git clone https://github.com/greatscottgadgets/luna.git $HOME/projects/luna
+      sudo chown
+
      
 
   - path: /home/user/scripts/ci-install-rust
@@ -91,11 +101,11 @@ write_files:
     owner: 'user:user'
     defer: true
     content: |
-      #! /bin/bash
+      #!/bin/bash
       set -euo pipefail
       curl --proto '=https' -sLf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile default
 
-  - path: /home/user/scripts/cynthion-install-rust-dependencies.sh
+  - path: /home/user/scripts/cynthion-install-rust-dependencies
     permission: '0755'
     owner: 'user:user'
     defer: true
@@ -104,8 +114,6 @@ write_files:
       rustup target add riscv32imac-unknown-none-elf
       rustup component add llvm-tools-preview
       cargo install cargo-binutils
-
-      rm ${0}
      
   - path: /etc/network/interfaces.d/additional.link
     permissions: '0644' 
