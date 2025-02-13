@@ -71,8 +71,8 @@ write_files:
       #!/bin/bash
       HOME=/home/user
       mkdir -p $HOME/.local/
-      curl -fL --output $HOME/scripts/oss-cad-suite-linux-x64-20250210.tgz https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2025-02-10/oss-cad-suite-linux-x64-20250210.tgz
-      tar -C $HOME/.local/ -xzvf $HOME/scripts/oss-cad-suite-linux-x64-20250210.tgz
+      curl -fL --output $HOME/scripts/oss-cad-suite-linux-x64-20241101.tgz https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2024-11-01/oss-cad-suite-linux-x64-20241101.tgz
+      tar -C $HOME/.local/ -xzvf $HOME/scripts/oss-cad-suite-linux-x64-20241101.tgz
 
   - path: /home/user/scripts/ci-install-cynthion-toolkit
     permissions: '0755'
