@@ -28,6 +28,7 @@ packages:
   - python3-venv
   - clang
   - gcc-riscv64-unknown-elf
+  - make
 
 write_files:
   - path: /home/user/.profile
@@ -92,9 +93,6 @@ write_files:
       #!/bin/bash
       HOME=/home/user
       git clone https://github.com/greatscottgadgets/luna.git $HOME/projects/luna
-      sudo chown
-
-     
 
   - path: /home/user/scripts/ci-install-rust
     permissions: '0755'
@@ -139,3 +137,4 @@ runcmd:
   - sudo -u user /home/user/scripts/ci-install-oss-cad-suite
   - sudo -u user /home/user/scripts/ci-install-rust
   - sudo -u user /home/user/scripts/ci-install-cynthion-toolkit
+  - sudo -u user /home/user/scripts/ci-install-luna-toolkit
