@@ -1,0 +1,133 @@
+#cloud-config
+users:
+  - default
+  - name: user
+    groups: adm, audio, cdrom, dialout, floppy, video, plugdev, dip, libvirtd, sudo
+
+    # passwd is 'user'.
+    # generate passwd via `openssl passwd -6 -salt your_unique_salt`
+    # --------------------------------
+    # DO NOT USE IN PRODUCTION SYSTEMS
+    # --------------------------------
+    passwd: $6$your_unique_salt$cI00puVwNOLtx8.mV2A8ye/cS9WxpFpC78U7A8NP5Z/ih8/i00dmGD0HlO4ni21iojOhzIm0Lcot/vxyx0wSk0
+    lock_passwd: false
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+
+hostname: cynthion-dev
+manage_etc_hosts: localhost
+ssh_pwauth: true
+package_upgrade: true
+package_update: true
+packages:
+  - ifupdown
+  - curl
+  - ripgrep
+  - git
+  - python3
+  - python3-venv
+  - clang
+  - gcc-riscv64-unknown-elf
+
+write_files:
+  - path: /home/user/.profile
+    permissions: '0644'
+    owner: 'user:user'
+    append: true
+    defer: true
+    content: |
+      export PATH="$HOME/.local/nvim-linux-x86_64/bin:$PATH"
+      export PATH="$HOME/.local/oss-cad-suite/bin:$PATH"
+      source $HOME/.cargo/env
+
+  - path: /home/user/.bash_aliases
+    permissions: '0644'
+    owner: 'user:user'
+    defer: true
+    content: |
+      alias ll="ls -al"
+
+  - path: /home/user/scripts/ci-install-astronvim
+    permissions: '0755'
+    owner: 'user:user'
+    defer: true
+    content: |
+      #!/bin/bash
+      set -x
+      HOME=/home/user
+      mkdir -p $HOME/.local/
+      dhlient ens3 2> /dev/null
+      curl -fL --output $HOME/scripts/nvim-linux-x86_64.tar.gz https://github.com/neovim/neovim/releases/download/v0.10.4/nvim-linux-x86_64.tar.gz
+      tar -C $HOME/.local/ -xzf $HOME/scripts/nvim-linux-x86_64.tar.gz
+      git clone --depth 1 https://github.com/AstroNvim/template $HOME/.config/nvim
+      rm -rf $HOME/.config/nvim/.git
+
+
+  - path: /home/user/scripts/ci-install-oss-cad-suite
+    permissions: '0755'
+    owner: 'user:user'
+    defer: true
+    content: |
+      #!/bin/bash
+      HOME=/home/user
+      mkdir -p $HOME/.local/
+      curl -fL --output $HOME/scripts/oss-cad-suite-linux-x64-20250210.tgz https://github.com/YosysHQ/oss-cad-suite-build/releases/download/2025-02-10/oss-cad-suite-linux-x64-20250210.tgz
+      tar -C $HOME/.local/ -xzvf $HOME/scripts/oss-cad-suite-linux-x64-20250210.tgz
+
+  - path: /home/user/scripts/ci-install-cynthion-toolkit
+    permissions: '0755'
+    owner: 'user:user'
+    defer: true
+    content: |
+      #!/bin/bash
+      HOME=/home/user
+      set -euo pipefail
+      git clone https://github.com/greatscottgadgets/cynthion.git $HOME/projects/cynthion
+      sudo chown -R user:user $HOME/.local $HOME/.config 
+     
+
+  - path: /home/user/scripts/ci-install-rust
+    permissions: '0755'
+    owner: 'user:user'
+    defer: true
+    content: |
+      #! /bin/bash
+      set -euo pipefail
+      curl --proto '=https' -sLf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile default
+
+  - path: /home/user/scripts/cynthion-install-rust-dependencies.sh
+    permission: '0755'
+    owner: 'user:user'
+    defer: true
+    content: |
+      #!/bin/bash
+      rustup target add riscv32imac-unknown-none-elf
+      rustup component add llvm-tools-preview
+      cargo install cargo-binutils
+
+      rm ${0}
+     
+  - path: /etc/network/interfaces.d/additional.link
+    permissions: '0644' 
+    content: | 
+      auto ens3
+      iface ens3 inet dhcp
+        hostname cynthion-dev
+
+  - path: /etc/motd
+    permissions: '0644'
+    content: |
+      -----------------------------------------------------
+                          __  __    _                       __         
+        _______  ______  / /_/ /_  (_)___  ____        ____/ /__ _   __
+       / ___/ / / / __ \/ __/ __ \/ / __ \/ __ \______/ __  / _ \ | / /
+      / /__/ /_/ / / / / /_/ / / / / /_/ / / / /_____/ /_/ /  __/ |/ / 
+      \___/\__, /_/ /_/\__/_/ /_/_/\____/_/ /_/      \__,_/\___/|___/  
+          /____/                                                       
+      -----------------------------------------------------
+runcmd:
+  - sudo chown -R user:user /home/user/scripts
+  - sudo -u user /home/user/scripts/ci-install-astronvim
+  - sudo -u user /home/user/scripts/ci-install-oss-cad-suite
+  - sudo -u user /home/user/scripts/ci-install-rust
+  - sudo -u user /home/user/scripts/ci-install-cynthion-toolkit

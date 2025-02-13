@@ -1,0 +1,53 @@
+# requires NIXPKGS_ALLOW_UNFREE=1 nix-shell -p packer qemu-full
+version: '3'
+
+env:
+  QEMU_ACCELERATOR: tcg
+  QEMU_MACHINE: pc  
+  QEMU_IMAGE: artifacts/debian_cynthion_12_amd64.qcow2
+  SSH_HOST_PORT: 2222
+
+tasks:
+  default:
+    silent: true
+    cmds: 
+      - task --list-all
+  
+  clean:
+    silent: true
+    cmds:
+      - rm -rf artifacts
+
+  build:
+    silent: true
+    env: 
+      PACKER_LOG: 1
+    cmds:
+     - task: clean
+     - packer init .
+     - packer build .
+  
+  start:
+    silent: true
+    cmds:
+      - | 
+        sudo \
+        qemu-system-x86_64 \
+        -machine ${QEMU_MACHINE},accel=${QEMU_ACCELERATOR} \
+        -boot order=d,menu=on \
+        -smp 2 -m 16G \
+        -device virtio-gpu-pci \
+        -device virtio-keyboard-pci \
+        -device virtio-net-pci,netdev=net \
+        -device virtio-mouse-pci \
+        -device qemu-xhci,id=usb-bus \
+        -device usb-kbd,bus=usb-bus.0 \
+        -device virtio-blk-pci,drive=hd0,bootindex=0 \
+        -usb \
+        -device usb-host,vendorid=0x1d50,productid=0x615b \
+        -device usb-host,vendorid=0x1d50,productid=0x615c \
+        -netdev "user,id=net,ipv6=off,hostfwd=tcp::${SSH_HOST_PORT}-:22" \
+        -drive "if=none,media=disk,id=hd0,file=${QEMU_IMAGE},discard=unmap" \
+        -display none \
+        -vga std \
+        -nographic
