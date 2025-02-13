@@ -29,6 +29,7 @@ packages:
   - clang
   - gcc-riscv64-unknown-elf
   - make
+  - zsh
 
 write_files:
   - path: /home/user/.profile
