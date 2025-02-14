@@ -30,6 +30,7 @@ packages:
   - gcc-riscv64-unknown-elf
   - make
   - zsh
+  - libusb-1.0-0
 
 write_files:
   - path: /home/user/.profile

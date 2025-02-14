@@ -19,7 +19,20 @@ Just run
 task build 
 ```
 
-The build process artificially introduces a waiting time due to some unresolved oddities with `cloud-init` (See below)
+### Access 
+
+The build process artificially introduces a waiting time due to some unresolved oddities with `cloud-init` (See below). After the build has successfully executed, we need to start the VM by running 
+
+```bash
+start task
+```
+
+The vm will now boot. Once the boot is complete, we can access the vm via ssh. (Make sure your packet filter allows local connections)
+
+```bash
+ssh -p 2222 user@localhost
+```
+
 
 ## Packages
 
