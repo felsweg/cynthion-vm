@@ -68,7 +68,6 @@ write_files:
       rm -rf $HOME/.config/nvim/.git
       sudo chown -R user:user $HOME/.local $HOME/.config 
 
-
   - path: /home/user/scripts/ci-install-oss-cad-suite
     permissions: '0755'
     owner: 'user:user'
@@ -125,7 +124,6 @@ write_files:
       SUBSYSTEM=="usb", ATTR{idVendor}=="1209", ATTR{idProduct}=="000a", SYMLINK+="cynthion-test-%k", TAG+="uaccess", MODE="666"
       SUBSYSTEM=="usb", ATTR{idVendor}=="1209", ATTR{idProduct}=="000e", SYMLINK+="cynthion-example-%k", TAG+="uaccess", MODE="666"
 
-     
   - path: /etc/network/interfaces.d/additional.link
     permissions: '0644' 
     content: | 
@@ -144,6 +142,7 @@ write_files:
       \___/\__, /_/ /_/\__/_/ /_/_/\____/_/ /_/      \__,_/\___/|___/  
           /____/                                                       
       -----------------------------------------------------
+      
 runcmd:
   - sudo chown -R user:user /home/user/scripts
   - sudo -u user /home/user/scripts/ci-install-astronvim
