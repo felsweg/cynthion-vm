@@ -105,7 +105,7 @@ write_files:
       set -euo pipefail
       curl --proto '=https' -sLf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable --profile default
 
-  - path: /home/user/scripts/cynthion-install-rust-dependencies
+  - path: /home/user/scripts/ci-install-rust-dependencies
     permissions: '0755'
     owner: 'user:user'
     defer: true
@@ -138,6 +138,6 @@ runcmd:
   - sudo -u user /home/user/scripts/ci-install-astronvim
   - sudo -u user /home/user/scripts/ci-install-oss-cad-suite
   - sudo -u user /home/user/scripts/ci-install-rust
-  - sudo -u user /home/user/scripts/cynthion-install-rust-dependencies
+  - sudo -u user /home/user/scripts/ci-install-rust-dependencies
   - sudo -u user /home/user/scripts/ci-install-cynthion-toolkit
   - sudo -u user /home/user/scripts/ci-install-luna-toolkit
