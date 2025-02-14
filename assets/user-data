@@ -41,6 +41,7 @@ write_files:
       export PATH="$HOME/.local/nvim-linux-x86_64/bin:$PATH"
       export PATH="$HOME/.local/oss-cad-suite/bin:$PATH"
       source $HOME/.cargo/env
+      source $HOME/.local/oss-cad-suite/environment
 
   - path: /home/user/.bash_aliases
     permissions: '0644'
