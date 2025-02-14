@@ -41,6 +41,7 @@ write_files:
     content: |
       export PATH="$HOME/.local/nvim-linux-x86_64/bin:$PATH"
       export PATH="$HOME/.local/oss-cad-suite/bin:$PATH"
+      export LUNA_PLATFORM="cynthion.gateware.platform:CynthionPlatformRev1D4"
       source $HOME/.cargo/env
       source $HOME/.local/oss-cad-suite/environment
 
@@ -115,6 +116,15 @@ write_files:
       rustup target add riscv32imac-unknown-none-elf
       rustup component add llvm-tools-preview
       cargo install cargo-binutils
+
+  - path: /etc/udev/rules.d/54-cynthion.rules
+    permissions: '0644'
+    content: |
+      SUBSYSTEM=="usb", ATTR{idVendor}=="1d50", ATTR{idProduct}=="615b", SYMLINK+="cynthion-%k", TAG+="uaccess", MODE="666"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="1d50", ATTR{idProduct}=="615c", SYMLINK+="cynthion-apollo-%k", TAG+="uaccess", MODE="666"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="1209", ATTR{idProduct}=="000a", SYMLINK+="cynthion-test-%k", TAG+="uaccess", MODE="666"
+      SUBSYSTEM=="usb", ATTR{idVendor}=="1209", ATTR{idProduct}=="000e", SYMLINK+="cynthion-example-%k", TAG+="uaccess", MODE="666"
+
      
   - path: /etc/network/interfaces.d/additional.link
     permissions: '0644' 
