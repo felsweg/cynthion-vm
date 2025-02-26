@@ -33,6 +33,8 @@ The vm will now boot. Once the boot is complete, we can access the vm via ssh. (
 ssh -p 2222 user@localhost
 ```
 
+There is a user defined called `user` with the password set to `user`. Please be reminded, that this setup is **meant for local development only! Do not use this configuration in a production system, that can be accessed publicly.** 
+
 
 ## Packages
 
